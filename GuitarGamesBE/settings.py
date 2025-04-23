@@ -46,21 +46,23 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',  # For token authentication
     'corsheaders',  # For handling CORS
+    'whitenoise.runserver_nostatic',  # Add this line for better local static file handling
     
     # Local apps
     'authentication',
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Moved up, right after SecurityMiddleware
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'authentication.middleware.UpdateLastActivityMiddleware',  # Add this line
+    'authentication.middleware.UpdateLastActivityMiddleware',
 ]
 
 # CORS settings
@@ -189,6 +191,9 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"  # Important for collectstatic
+
+# WhiteNoise configuration
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
