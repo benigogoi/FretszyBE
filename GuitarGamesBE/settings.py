@@ -152,6 +152,7 @@ if os.environ.get('PYTHONANYWHERE', 'False') == 'True':
             },
         }
     }
+    print("📡 Using DB HOST:", DATABASES['default']['HOST'])
 else:
     # Local MySQL settings for development
     DATABASES = {
