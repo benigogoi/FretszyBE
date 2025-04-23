@@ -28,8 +28,8 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-01v#=%ymv(@zwxx7hsnkz
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG", "True") == "True"
 
-# Update allowed hosts for Render deployment
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", ".onrender.com", "fretszy.com"]
+# Update allowed hosts for PythonAnywhere deployment
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", ".pythonanywhere.com", "fretszy.com"]
 
 
 # Application definition
@@ -73,7 +73,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:5173",
     "https://fretszy.com",
 ]
-CORS_ALLOW_ALL_ORIGINS = True  # Temporarily allow all origins for testing
+CORS_ALLOW_ALL_ORIGINS = False  # Set to False for production
 CORS_ALLOW_METHODS = [
     'DELETE',
     'GET',
@@ -134,24 +134,44 @@ WSGI_APPLICATION = "GuitarGamesBE.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-# Default to SQLite for local development if no PostgreSQL connection
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.environ.get("DB_NAME", "fretszy"),
-        "USER": os.environ.get("DB_USER", "postgres"),
-        "PASSWORD": os.environ.get("DB_PASSWORD", "qwerty12-_"), 
-        "HOST": os.environ.get("DB_HOST", "localhost"),
-        "PORT": os.environ.get("DB_PORT", "5432"),
+# Default database configuration
+# Development: SQLite or MySQL locally
+# Production: MySQL on PythonAnywhere
+if os.environ.get('PYTHONANYWHERE', 'False') == 'True':
+    # PythonAnywhere MySQL settings
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'BeniGogoi$fretszyDB',
+            'USER': 'BeniGogoi',
+            'PASSWORD': 'qwerty12-_',
+            'HOST': 'BeniGogoi.mysql.pythonanywhere-services.com',
+            'OPTIONS': {
+                'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+            },
+        }
     }
-}
+else:
+    # Local MySQL settings for development
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': os.environ.get('DB_NAME', 'fretszy'),
+            'USER': os.environ.get('DB_USER', 'root'),
+            'PASSWORD': os.environ.get('DB_PASSWORD', ''),
+            'HOST': os.environ.get('DB_HOST', 'localhost'),
+            'PORT': os.environ.get('DB_PORT', '3306'),
+            'OPTIONS': {
+                'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+            },
+        }
+    }
 
-# For production deployment with Render
+# For DATABASE_URL configuration (if provided)
 if 'DATABASE_URL' in os.environ:
     DATABASES['default'] = dj_database_url.config(
         conn_max_age=600,
         conn_health_checks=True,
-        ssl_require=True,
     )
 
 
@@ -191,6 +211,10 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"  # Important for collectstatic
+
+# Media files configuration
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # WhiteNoise configuration
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
