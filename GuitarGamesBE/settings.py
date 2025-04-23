@@ -146,6 +146,7 @@ if os.environ.get('PYTHONANYWHERE', 'False') == 'True':
             'USER': 'BeniGogoi',
             'PASSWORD': 'qwerty12-_',
             'HOST': 'BeniGogoi.mysql.pythonanywhere-services.com',
+            'PORT': '3306',
             'OPTIONS': {
                 'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
             },
