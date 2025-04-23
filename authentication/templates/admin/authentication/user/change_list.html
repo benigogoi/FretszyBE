@@ -1,0 +1,14 @@
+{% extends "admin/change_list.html" %}
+{% load i18n %}
+
+{% block result_list %}
+    <div class="module" style="margin-bottom: 10px; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+        <h3 style="margin: 0;">{% trans "User Stats" %}</h3>
+        <p style="margin: 5px 0 0 0;">
+            {% blocktrans with count=online_users_count %}
+            <strong>{{ count }}</strong> user{{ count|pluralize }} currently online
+            {% endblocktrans %}
+        </p>
+    </div>
+    {{ block.super }}
+{% endblock %}
